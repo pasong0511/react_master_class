@@ -9,7 +9,7 @@ function App() {
             currentTarget: { value },
         } = event;
 
-        setValue(event.currentTarget.value);
+        setValue(value);
     }; //React.FormEvent는 공식 문서를 가야 알 수 있음
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {

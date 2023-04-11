@@ -1,6 +1,8 @@
-import styled from "styled-components";
-import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Switch, Route, useLocation, useParams } from "react-router";
+import styled from "styled-components";
+import Chart from "./Chart";
+import Price from "./Price";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -20,9 +22,37 @@ const Title = styled.h1`
     color: ${(props) => props.theme.accentColor};
 `;
 
+const Img = styled.img`
+    width: 35px;
+    height: 35px;
+    margin: 10px 0 0 10px;
+`;
+
 const Loader = styled.span`
     text-align: center;
     display: block;
+`;
+
+const Overview = styled.div`
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    span:first-child {
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+`;
+const Description = styled.p`
+    margin: 20px 0px;
 `;
 
 //Object.keys(temp1).join();
@@ -137,14 +167,53 @@ function Coin() {
 
             setLoading(false);
         })();
-    }, []);
+    }, [coinId]);
 
     return (
         <Container>
             <Header>
-                <Title>{state?.name || "Loading"}</Title>
+                <Title>
+                    {state?.name
+                        ? state.name
+                        : loading
+                        ? "Loading..."
+                        : info?.name}
+                </Title>
+                <Img
+                    src={`https://coinicons-api.vercel.app/api/icon/${info?.symbol.toLowerCase()}`}
+                />
             </Header>
-            {loading ? <Loader>로딩</Loader> : null}
+            {loading ? (
+                <Loader>로딩</Loader>
+            ) : (
+                <>
+                    <Overview>
+                        <OverviewItem>
+                            <span>Rank:</span>
+                            <span>{info?.rank}</span>
+                        </OverviewItem>
+                        <OverviewItem>
+                            <span>Symbol:</span>
+                            <span>${info?.symbol}</span>
+                        </OverviewItem>
+                        <OverviewItem>
+                            <span>Open Source:</span>
+                            <span>{info?.open_source ? "Yes" : "No"}</span>
+                        </OverviewItem>
+                    </Overview>
+                    <Description>{info?.description}</Description>
+                    <Overview>
+                        <OverviewItem>
+                            <span>Total Suply:</span>
+                            <span>{priceInfo?.total_supply}</span>
+                        </OverviewItem>
+                        <OverviewItem>
+                            <span>Max Supply:</span>
+                            <span>{priceInfo?.max_supply}</span>
+                        </OverviewItem>
+                    </Overview>
+                </>
+            )}
         </Container>
     );
 }

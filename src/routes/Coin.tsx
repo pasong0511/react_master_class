@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Switch, Route, useLocation, useParams } from "react-router";
+import { Link } from "react-router-dom";
+import {
+    Switch,
+    Route,
+    useLocation,
+    useParams,
+    useRouteMatch,
+} from "react-router-dom";
 import styled from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
@@ -53,6 +60,28 @@ const OverviewItem = styled.div`
 `;
 const Description = styled.p`
     margin: 20px 0px;
+`;
+
+const Tabs = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 25px 0px;
+    gap: 10px;
+`;
+
+const Tab = styled.span<{ isActive: boolean }>`
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 7px 0px;
+    border-radius: 10px;
+    color: ${(props) =>
+        props.isActive ? props.theme.accentColor : props.theme.textColor};
+    a {
+        display: block;
+    }
 `;
 
 //Object.keys(temp1).join();
@@ -148,6 +177,11 @@ function Coin() {
     const [info, setInfo] = useState<IInfoData>();
     const [priceInfo, setPriceInfo] = useState<IPriceData>();
 
+    const priceMatch = useRouteMatch("/:coinId/price"); //URL에 coinId/price라는 URL이 있는지 확인해달라는 훅
+    const chartMatch = useRouteMatch("/:coinId/chart"); //존재하는 경우 isExact: true 반환
+
+    console.log(priceMatch);
+
     useEffect(() => {
         //즉시 실행함수
         (async () => {
@@ -161,10 +195,6 @@ function Coin() {
 
             setInfo(infoData);
             setPriceInfo(priceData);
-
-            console.log(infoData);
-            console.log(priceData);
-
             setLoading(false);
         })();
     }, [coinId]);
@@ -212,6 +242,19 @@ function Coin() {
                             <span>{priceInfo?.max_supply}</span>
                         </OverviewItem>
                     </Overview>
+
+                    {/* Link는 URL을 변경 <a> 엘리먼트 같음*/}
+                    <Tabs>
+                        <Tab isActive={chartMatch !== null}>
+                            <Link to={`/${coinId}/chart`}>Chart</Link>
+                        </Tab>
+                        <Tab isActive={priceMatch !== null}>
+                            <Link to={`/${coinId}/price`}>Price</Link>
+                        </Tab>
+                    </Tabs>
+
+                    {/* <Switch> 는 첫번째로 매칭되는 path 를 가진 컴포넌트를 렌더링 */}
+                    {/* Link로 변경한 URL에 맞춰 하위 컴포넌트만 리렌더링 */}
                     <Switch>
                         <Route path={`/${coinId}/price`}>
                             <Price />

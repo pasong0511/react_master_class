@@ -27,8 +27,6 @@ Object.keys(temp1).join();
 Object.values(temp1).map(v => typeof v).join();
 ```
 
-
-
 ## React Query리액트 쿼리
 
 📌 5.9-5.10 React Query
@@ -46,8 +44,6 @@ QueryClientProvider client={queryClient}
 
 https://react-query.tanstack.com/quick-start
 
-
-
 ### Queries
 
 쿼리는 서버에서 데이터를 가져오기 위해 모든 Promise 기반 메서드(GET 및 POST 메서드 포함)와 함께 사용
@@ -57,9 +53,16 @@ ex) const result = useQuery('todos', fetchTodoList)
 https://react-query.tanstack.com/guides/queries
 https://react-query.tanstack.com/reference/useQuery#_top
 
-
-
 ### Query Key
 
 React Query는 쿼리 키를 기반으로 쿼리 캐싱을 관리
 https://react-query.tanstack.com/guides/query-keys
+
+### 사용하는 방법
+
+```
+1. fetcher 함수 만들기
+  - api.tsx 파일에 fetchCoinInfo, fetchTickersInfo 추가
+2. 페이지 파일에 쿼리에 사용할 key를 포함해서 useQuery("키", ) 추가
+3. useQuery("키", fetch) 추가 fetch 함수 추가
+```

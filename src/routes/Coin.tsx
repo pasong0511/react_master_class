@@ -7,9 +7,11 @@ import {
     useParams,
     useRouteMatch,
 } from "react-router-dom";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
+import { fetchCoinInfo, fetchTickersInfo } from "../api";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -108,8 +110,6 @@ interface ITeam {
     position: string;
 }
 
-interface ILinks {}
-
 interface IInfoData {
     id: string;
     name: string;
@@ -172,16 +172,24 @@ function Coin() {
     //useParams URL에 있는 정보를 가져옴
     const { coinId } = useParams<RouteParams>();
     const { state } = useLocation<RounteState>(); // dom V6 -> const name = location.state as RouterState;
-    const [loading, setLoading] = useState(true);
-
-    const [info, setInfo] = useState<IInfoData>();
-    const [priceInfo, setPriceInfo] = useState<IPriceData>();
 
     const priceMatch = useRouteMatch("/:coinId/price"); //URL에 coinId/price라는 URL이 있는지 확인해달라는 훅
     const chartMatch = useRouteMatch("/:coinId/chart"); //존재하는 경우 isExact: true 반환
 
-    console.log(priceMatch);
+    //고유한 값이여 야하기 때문에 키 값을 살짝 변경
+    const { isLoading: infoLoding, data: infoData } = useQuery<IInfoData>(
+        ["info", coinId],
+        () => fetchCoinInfo(coinId)
+    );
+    const { isLoading: tickersLoding, data: tickersData } =
+        useQuery<IPriceData>(["tickers", coinId], () =>
+            fetchTickersInfo(coinId)
+        );
 
+    /*
+    const [loading, setLoading] = useState(true);
+    const [info, setInfo] = useState<IInfoData>();
+    const [priceInfo, setPriceInfo] = useState<IPriceData>();
     useEffect(() => {
         //즉시 실행함수
         (async () => {
@@ -198,6 +206,9 @@ function Coin() {
             setLoading(false);
         })();
     }, [coinId]);
+     */
+
+    const loading = infoLoding || tickersLoding;
 
     return (
         <Container>
@@ -207,10 +218,10 @@ function Coin() {
                         ? state.name
                         : loading
                         ? "Loading..."
-                        : info?.name}
+                        : infoData?.name}
                 </Title>
                 <Img
-                    src={`https://coinicons-api.vercel.app/api/icon/${info?.symbol.toLowerCase()}`}
+                    src={`https://coinicons-api.vercel.app/api/icon/${infoData?.symbol.toLowerCase()}`}
                 />
             </Header>
             {loading ? (
@@ -220,26 +231,26 @@ function Coin() {
                     <Overview>
                         <OverviewItem>
                             <span>Rank:</span>
-                            <span>{info?.rank}</span>
+                            <span>{infoData?.rank}</span>
                         </OverviewItem>
                         <OverviewItem>
                             <span>Symbol:</span>
-                            <span>${info?.symbol}</span>
+                            <span>${infoData?.symbol}</span>
                         </OverviewItem>
                         <OverviewItem>
                             <span>Open Source:</span>
-                            <span>{info?.open_source ? "Yes" : "No"}</span>
+                            <span>{infoData?.open_source ? "Yes" : "No"}</span>
                         </OverviewItem>
                     </Overview>
-                    <Description>{info?.description}</Description>
+                    <Description>{infoData?.description}</Description>
                     <Overview>
                         <OverviewItem>
                             <span>Total Suply:</span>
-                            <span>{priceInfo?.total_supply}</span>
+                            <span>{tickersData?.total_supply}</span>
                         </OverviewItem>
                         <OverviewItem>
                             <span>Max Supply:</span>
-                            <span>{priceInfo?.max_supply}</span>
+                            <span>{tickersData?.max_supply}</span>
                         </OverviewItem>
                     </Overview>
 

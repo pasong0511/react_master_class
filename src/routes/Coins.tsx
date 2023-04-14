@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 import { fetchCoins } from "../api";
 
 const Container = styled.div`
@@ -82,8 +83,11 @@ function Coins() {
 
     return (
         <Container>
+            <Helmet>
+                <title>Coin List</title>
+            </Helmet>
             <Header>
-                <Title>코인</Title>
+                <Title>Coin List 💰</Title>
             </Header>
             {isLoading ? (
                 <Loader>로딩</Loader>

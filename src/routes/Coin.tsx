@@ -179,7 +179,8 @@ function Coin() {
     //고유한 값이여 야하기 때문에 키 값을 살짝 변경
     const { isLoading: infoLoding, data: infoData } = useQuery<IInfoData>(
         ["info", coinId],
-        () => fetchCoinInfo(coinId)
+        () => fetchCoinInfo(coinId),
+        { refetchInterval: 5000 }
     );
     const { isLoading: tickersLoding, data: tickersData } =
         useQuery<IPriceData>(["tickers", coinId], () =>
@@ -238,8 +239,8 @@ function Coin() {
                             <span>${infoData?.symbol}</span>
                         </OverviewItem>
                         <OverviewItem>
-                            <span>Open Source:</span>
-                            <span>{infoData?.open_source ? "Yes" : "No"}</span>
+                            <span>Price:</span>
+                            <span>{tickersData?.quotes.USD.price}</span>
                         </OverviewItem>
                     </Overview>
                     <Description>{infoData?.description}</Description>

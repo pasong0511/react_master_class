@@ -65,7 +65,6 @@ interface ICoin {
 
 function Coins() {
     const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
-    console.log(isLoading, data);
     /*const [coins, setCoins] = useState([]); //타입을 갖은 배열이라고 알려줌
     const [loading, setLoading] = useState(true);
 

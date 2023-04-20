@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import {
@@ -13,6 +12,7 @@ import styled from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
 import { fetchCoinInfo, fetchTickersInfo } from "../api";
+import Candle from "./Candle";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -67,7 +67,7 @@ const Description = styled.p`
 
 const Tabs = styled.div`
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     margin: 25px 0px;
     gap: 10px;
 `;
@@ -84,6 +84,7 @@ const Tab = styled.span<{ isActive: boolean }>`
         props.isActive ? props.theme.accentColor : props.theme.textColor};
     a {
         display: block;
+        color: #ffffff;
     }
 `;
 
@@ -181,7 +182,7 @@ function Coin() {
     const { isLoading: infoLoding, data: infoData } = useQuery<IInfoData>(
         ["info", coinId],
         () => fetchCoinInfo(coinId),
-        { refetchInterval: 5000 }
+        { refetchInterval: 50000 }
     );
     const { isLoading: tickersLoding, data: tickersData } =
         useQuery<IPriceData>(["tickers", coinId], () =>
@@ -211,6 +212,8 @@ function Coin() {
      */
 
     const loading = infoLoding || tickersLoding;
+
+    //console.log(tickersData?.quotes.USD);
 
     return (
         <Container>
@@ -271,6 +274,9 @@ function Coin() {
                             <Link to={`/${coinId}/chart`}>Chart</Link>
                         </Tab>
                         <Tab isActive={priceMatch !== null}>
+                            <Link to={`/${coinId}/candle`}>Candle</Link>
+                        </Tab>
+                        <Tab isActive={priceMatch !== null}>
                             <Link to={`/${coinId}/price`}>Price</Link>
                         </Tab>
                     </Tabs>
@@ -279,10 +285,13 @@ function Coin() {
                     {/* Link로 변경한 URL에 맞춰 하위 컴포넌트만 리렌더링 */}
                     <Switch>
                         <Route path={`/${coinId}/price`}>
-                            <Price />
+                            <Price tickersData={tickersData?.quotes.USD} />
                         </Route>
                         <Route path={`/${coinId}/chart`}>
                             <Chart coinId={coinId} />
+                        </Route>
+                        <Route path={`/${coinId}/candle`}>
+                            <Candle coinId={coinId} />
                         </Route>
                     </Switch>
                 </>

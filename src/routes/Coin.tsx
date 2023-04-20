@@ -181,8 +181,8 @@ function Coin() {
     //고유한 값이여 야하기 때문에 키 값을 살짝 변경
     const { isLoading: infoLoding, data: infoData } = useQuery<IInfoData>(
         ["info", coinId],
-        () => fetchCoinInfo(coinId),
-        { refetchInterval: 50000 }
+        () => fetchCoinInfo(coinId)
+        // { refetchInterval: 500000 }
     );
     const { isLoading: tickersLoding, data: tickersData } =
         useQuery<IPriceData>(["tickers", coinId], () =>

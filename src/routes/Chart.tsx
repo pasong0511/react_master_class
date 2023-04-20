@@ -28,8 +28,8 @@ const transedTimestramp = (originTime: number) => {
 function Chart({ coinId }: ChartProps) {
     const { isLoading, data } = useQuery<IHistoricalData[]>(
         ["ohlcv", coinId],
-        () => fetchCoinHistory(coinId),
-        { refetchInterval: 100000 }
+        () => fetchCoinHistory(coinId)
+        // { refetchInterval: 100000 }
     );
 
     return (

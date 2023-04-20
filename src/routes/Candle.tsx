@@ -20,8 +20,8 @@ interface ChartProps {
 function Candle({ coinId }: ChartProps) {
     const { isLoading, data } = useQuery<IHistoricalData[]>(
         ["ohlcv", coinId],
-        () => fetchCoinHistory(coinId),
-        { refetchInterval: 10000 }
+        () => fetchCoinHistory(coinId)
+        // { refetchInterval: 100000 }
     );
 
     //console.log(data);

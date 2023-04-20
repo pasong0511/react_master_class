@@ -170,7 +170,11 @@ interface IPriceData {
     };
 }
 
-function Coin() {
+interface ICoinProps {
+    isDark: boolean;
+}
+
+function Coin({ isDark }: ICoinProps) {
     //useParams URL에 있는 정보를 가져옴
     const { coinId } = useParams<RouteParams>();
     const { state } = useLocation<RounteState>(); // dom V6 -> const name = location.state as RouterState;
@@ -288,7 +292,7 @@ function Coin() {
                             <Price tickersData={tickersData?.quotes.USD} />
                         </Route>
                         <Route path={`/${coinId}/chart`}>
-                            <Chart coinId={coinId} />
+                            <Chart isDark={isDark} coinId={coinId} />
                         </Route>
                         <Route path={`/${coinId}/candle`}>
                             <Candle coinId={coinId} />

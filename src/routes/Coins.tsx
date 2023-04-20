@@ -64,7 +64,11 @@ interface ICoin {
     type: string;
 }
 
-function Coins() {
+interface ICoinsProps {
+    toggleDark: () => void;
+}
+
+function Coins({ toggleDark }: ICoinsProps) {
     const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
     /*const [coins, setCoins] = useState([]); //타입을 갖은 배열이라고 알려줌
     const [loading, setLoading] = useState(true);
@@ -88,6 +92,7 @@ function Coins() {
             </Helmet>
             <Header>
                 <Title>Coin List 💰</Title>
+                <button onClick={toggleDark}>Toggle Mode</button>
             </Header>
             {isLoading ? (
                 <Loader>로딩</Loader>
